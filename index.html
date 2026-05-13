@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mis Finanzas - PWA</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="theme-color" content="#0f766e" />
+</head>
+<body>
+  <div id="toast-container" class="toast-container"></div>
+  <div id="cookies-banner" class="cookies-banner hidden">
+    <div class="cookies-banner-inner">
+      <span>Esta aplicación utiliza cookies técnicas y de sesión necesarias para su funcionamiento. Más información en la <a href="legal/politica-cookies.html" target="_blank">política de cookies</a>.</span>
+      <button id="btn-aceptar-cookies" type="button">Aceptar</button>
+    </div>
+  </div>
+  <div id="app">
+    <header class="topbar">
+      <h1>Mis Finanzas</h1>
+      <div class="user-info" id="user-info"></div>
+    </header>
+
+    <main>
+      <section id="auth-view" class="view">
+        <div class="card auth-card">
+          <h2>Iniciar sesión</h2>
+          <form id="login-form">
+            <label>Email
+              <input type="email" name="email" required />
+            </label>
+            <label>Contraseña
+              <input type="password" name="password" required />
+            </label>
+            <button type="submit">Entrar</button>
+          </form>
+          <p class="muted">¿No tienes cuenta? <button id="show-register" type="button" class="link-button">Crear cuenta</button></p>
+        </div>
+
+        <div class="card auth-card hidden" id="register-card">
+          <h2>Crear cuenta</h2>
+          <form id="register-form">
+            <label>Nombre
+              <input type="text" name="nombre" required />
+            </label>
+            <label>Email
+              <input type="email" name="email" required />
+            </label>
+            <label>Contraseña
+              <input type="password" name="password" required />
+            </label>
+            <button type="submit">Registrarme</button>
+          </form>
+          <p class="muted">¿Ya tienes cuenta? <button id="show-login" type="button" class="link-button">Inicia sesión</button></p>
+        </div>
+      </section>
+
+      <section id="app-view" class="view hidden">
+        <nav class="tabs">
+          <button data-tab="dashboard" class="active">Dashboard</button>
+          <button data-tab="transacciones">Transacciones</button>
+          <button data-tab="categorias">Categorías</button>
+          <button data-tab="ahorros">Ahorros</button>
+        </nav>
+
+        <section id="tab-dashboard" class="tab active">
+          <div class="grid grid-resumen" id="resumen-cards">
+          </div>
+          <div class="grid grid-graficos">
+            <div class="card" id="grafico-diario">
+              <h3>Gastos por día</h3>
+              <canvas id="canvas-diario"></canvas>
+            </div>
+            <div class="card" id="grafico-categorias">
+              <h3>Gastos por categoría</h3>
+              <canvas id="canvas-categorias"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-transacciones" class="tab">
+          <div class="card">
+            <h3>Nueva transacción</h3>
+            <form id="form-transaccion" class="grid grid-form">
+              <label>Tipo
+                <select name="tipo" required>
+                  <option value="gasto">Gasto</option>
+                  <option value="ingreso">Ingreso</option>
+                </select>
+              </label>
+              <label>Categoría
+                <select name="categoria_id" id="select-categoria" required></select>
+              </label>
+              <label>Fecha
+                <input type="date" name="fecha" required />
+              </label>
+              <label>Importe
+                <input type="number" name="importe" step="0.01" min="0" required />
+              </label>
+              <label>Descripción
+                <input type="text" name="descripcion" />
+              </label>
+              <label>Método de pago
+                <input type="text" name="metodo_pago" />
+              </label>
+              <button type="submit" class="full">Guardar</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h3>Listado</h3>
+            <div class="filtros">
+              <label>Desde
+                <input type="date" id="filtro-desde" />
+              </label>
+              <label>Hasta
+                <input type="date" id="filtro-hasta" />
+              </label>
+              <label>Tipo
+                <select id="filtro-tipo">
+                  <option value="">Todos</option>
+                  <option value="gasto">Solo gastos</option>
+                  <option value="ingreso">Solo ingresos</option>
+                </select>
+              </label>
+              <label>Buscar
+                <input type="text" id="filtro-busqueda" placeholder="Buscar por descripción o categoría" />
+              </label>
+              <button id="btn-filtrar" type="button">Aplicar filtros</button>
+            </div>
+            <div class="tabla-contenedor">
+              <table class="tabla" id="tabla-transacciones">
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Tipo</th>
+                    <th>Categoría</th>
+                    <th>Descripción</th>
+                    <th>Importe</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="tab-categorias" class="tab">
+          <div class="card">
+            <h3>Nueva categoría</h3>
+            <form id="form-categoria" class="grid grid-form">
+              <label>Nombre
+                <input type="text" name="nombre" required />
+              </label>
+              <label>Tipo
+                <select name="tipo">
+                  <option value="gasto">Gasto</option>
+                  <option value="ingreso">Ingreso</option>
+                </select>
+              </label>
+              <label>
+                <input type="checkbox" name="es_recurrente" /> Recurrente
+              </label>
+              <button type="submit" class="full">Guardar</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h3>Categorías</h3>
+            <ul id="lista-categorias" class="lista-simple"></ul>
+          </div>
+        </section>
+
+        <section id="tab-ahorros" class="tab">
+          <div class="card">
+            <h3>Nuevo objetivo de ahorro</h3>
+            <form id="form-objetivo" class="grid grid-form">
+              <label>Nombre
+                <input type="text" name="nombre" required />
+              </label>
+              <label>Monto objetivo
+                <input type="number" name="monto_objetivo" step="0.01" min="0" required />
+              </label>
+              <label>Fecha límite
+                <input type="date" name="fecha_limite" />
+              </label>
+              <button type="submit" class="full">Guardar</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h3>Objetivos</h3>
+            <ul id="lista-objetivos" class="lista-simple"></ul>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <small>
+        <a href="legal/aviso-legal.html" target="_blank">Aviso legal</a> ·
+        <a href="legal/politica-privacidad.html" target="_blank">Privacidad</a> ·
+        <a href="legal/politica-cookies.html" target="_blank">Cookies</a> ·
+        <a href="legal/terminos-condiciones.html" target="_blank">Términos</a>
+      </small>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
