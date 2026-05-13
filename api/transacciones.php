@@ -30,7 +30,7 @@ if ($metodo === 'GET') {
     if ($tipo && in_array($tipo, ['gasto','ingreso'])) { $sql .= ' AND t.tipo = ?'; $params[] = $tipo; }
     if ($categoria_id) { $sql .= ' AND t.categoria_id = ?'; $params[] = $categoria_id; }
 
-    $sql += ' ORDER BY t.fecha DESC, t.id DESC';
+    $sql .= ' ORDER BY t.fecha DESC, t.id DESC';
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
