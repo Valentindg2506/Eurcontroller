@@ -1,9 +1,9 @@
-const CACHE_NAME = 'mis-finanzas-cache-v1';
+const CACHE_NAME = 'mis-finanzas-cache-v2';
 const OFFLINE_URLS = [
   '/',
-  '/index.html',
-  '/styles.css',
-  '/app.js',
+  '/public/index.html',
+  '/public/styles.css',
+  '/public/app.js',
   '/manifest.json'
 ];
 
@@ -33,7 +33,7 @@ self.addEventListener('fetch', event => {
           const clone = networkResp.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
           return networkResp;
-        }).catch(() => caches.match('/index.html'));
+        }).catch(() => caches.match('/public/index.html'));
       })
     );
   }
