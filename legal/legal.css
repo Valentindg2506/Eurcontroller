@@ -1,0 +1,109 @@
+/* Hoja de estilos de las páginas legales.
+   Comparte tokens con la aplicación pero es independiente: estas páginas se
+   abren en una pestaña nueva y deben poder leerse sin cargar la app entera. */
+
+:root {
+  color-scheme: light;
+  --fondo: #f4f5f8;
+  --superficie: #ffffff;
+  --borde: #e2e5ec;
+  --texto: #10131a;
+  --texto-2: #5a6474;
+  --texto-3: #8b94a4;
+  --marca: #4338ca;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --fondo: #0b0d12;
+    --superficie: #14171e;
+    --borde: #272c37;
+    --texto: #edf0f5;
+    --texto-2: #a3adbd;
+    --texto-3: #737e8f;
+    --marca: #a49dfa;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 40px 20px 72px;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  max-width: 780px;
+  margin-inline: auto;
+  padding: 32px clamp(20px, 5vw, 44px) 40px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+}
+
+.volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 780px;
+  margin: 0 auto 16px;
+  color: var(--texto-2);
+  font-size: .875rem;
+  text-decoration: none;
+}
+.volver:hover { color: var(--marca); }
+
+h1 {
+  margin: 0 0 6px;
+  font-size: 1.75rem;
+  letter-spacing: -.02em;
+  line-height: 1.2;
+}
+
+/* El primer párrafo hace de entradilla: resume la página y la separa del resto. */
+main > p:first-of-type {
+  margin: 0 0 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--borde);
+  color: var(--texto-2);
+}
+
+h2 {
+  margin: 32px 0 8px;
+  font-size: 1.0625rem;
+  letter-spacing: -.01em;
+}
+
+p, li { margin: 0 0 12px; color: var(--texto); }
+ul { padding-left: 22px; }
+
+a { color: var(--marca); }
+
+/* Los datos que el titular debe rellenar antes de publicar se marcan en
+   amarillo: así es imposible que un [corchete] llegue a producción sin verse. */
+.pendiente {
+  background: #fde68a;
+  color: #713f12;
+  padding: 0 4px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+@media (prefers-color-scheme: dark) {
+  .pendiente { background: #4a3708; color: #fbbf24; }
+}
+
+footer {
+  max-width: 780px;
+  margin: 24px auto 0;
+  color: var(--texto-3);
+  font-size: .8125rem;
+  text-align: center;
+}
+footer a { color: var(--texto-2); }

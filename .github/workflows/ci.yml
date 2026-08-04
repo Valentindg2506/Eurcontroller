@@ -7,17 +7,54 @@ on:
     branches: [ main ]
 
 jobs:
-  php-lint:
+  php:
+    name: Sintaxis PHP
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.0', '8.3']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: pdo_mysql, mbstring
+
+      - name: Comprobar sintaxis
+        run: find api herramientas -name '*.php' -print0 | xargs -0 -n1 -P4 php -l
+
+      - name: Comprobar que no se han subido credenciales
+        run: |
+          if [ -f api/credenciales.php ]; then
+            echo "::error::api/credenciales.php no debe versionarse (está en .gitignore)."
+            exit 1
+          fi
+
+  javascript:
+    name: Sintaxis JavaScript
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
+      - uses: actions/setup-node@v4
         with:
-          php-version: '8.2'
+          node-version: '22'
 
-      - name: Validate PHP syntax
+      # `node --check` solo interpreta un archivo como módulo si la extensión es
+      # .mjs, así que se comprueba sobre copias temporales.
+      - name: Comprobar sintaxis de los módulos
         run: |
-          find api -name "*.php" -print0 | xargs -0 -n 1 php -l
+          mkdir -p /tmp/chk
+          for f in $(find assets/js sw.js -name '*.js'); do
+            cp "$f" "/tmp/chk/$(echo "$f" | tr '/' '_').mjs"
+            node --check "/tmp/chk/$(echo "$f" | tr '/' '_').mjs" || exit 1
+          done
+          echo "Todos los módulos compilan."
+
+  json:
+    name: Validez del manifiesto
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -c "import json; json.load(open('manifest.webmanifest')); print('manifest.webmanifest válido')"

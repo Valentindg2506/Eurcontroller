@@ -1,40 +1,20 @@
-const CACHE_NAME = 'mis-finanzas-cache-v2';
-const OFFLINE_URLS = [
-  '/',
-  '/public/index.html',
-  '/public/styles.css',
-  '/public/app.js',
-  '/manifest.json'
-];
+/**
+ * Service worker heredado de la versión anterior (rutas /public/…).
+ *
+ * Se conserva únicamente para que los navegadores que aún lo tengan registrado
+ * lo descarten y borren sus cachés; de lo contrario podrían seguir sirviendo
+ * indefinidamente el HTML antiguo. El service worker vigente es `sw.js`.
+ */
 
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(OFFLINE_URLS))
-  );
-});
+self.addEventListener('install', () => self.skipWaiting());
 
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keys => Promise.all(
-      keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
-    ))
-  );
-});
+self.addEventListener('activate', (evento) => {
+  evento.waitUntil((async () => {
+    const claves = await caches.keys();
+    await Promise.all(claves.map((clave) => caches.delete(clave)));
+    await self.registration.unregister();
 
-self.addEventListener('fetch', event => {
-  const { request } = event;
-  const url = new URL(request.url);
-
-  if (request.method === 'GET' && (url.origin === location.origin) && !url.pathname.startsWith('/api/')) {
-    event.respondWith(
-      caches.match(request).then(resp => {
-        if (resp) return resp;
-        return fetch(request).then(networkResp => {
-          const clone = networkResp.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
-          return networkResp;
-        }).catch(() => caches.match('/public/index.html'));
-      })
-    );
-  }
+    const clientes = await self.clients.matchAll({ type: 'window' });
+    clientes.forEach((cliente) => cliente.navigate(cliente.url));
+  })());
 });

@@ -1,0 +1,14 @@
+# Credenciales de base de datos (una por entorno, nunca versionadas)
+/api/credenciales.php
+
+# Sistema operativo / editores
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Volcados y registros
+*.log
+*.sql.gz
+/dumps/
