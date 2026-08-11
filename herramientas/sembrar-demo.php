@@ -171,10 +171,10 @@ $stmtAportacion = $pdo->prepare(
 );
 
 foreach ([
-    ['Viaje a Japón',        4200, $hoy->modify('+10 months')->format('Y-m-d'), '#4a3aa7', 'activo',      6, 210],
-    ['Colchón de seguridad', 6000, null,                                        '#1baf7a', 'activo',      8, 300],
-    ['Portátil nuevo',       1400, $hoy->modify('+4 months')->format('Y-m-d'),  '#eb6834', 'activo',      3, 150],
-    ['Bici de carretera',     900, $hoy->modify('-1 month')->format('Y-m-d'),   '#2a78d6', 'completado',  6, 150],
+    ['Viaje a Japón',        4200, $hoy->modify('+10 months')->format('Y-m-d'), '#7a6aa0', 'activo',      6, 210],
+    ['Colchón de seguridad', 6000, null,                                        '#5a8a5c', 'activo',      8, 300],
+    ['Portátil nuevo',       1400, $hoy->modify('+4 months')->format('Y-m-d'),  '#c46838', 'activo',      3, 150],
+    ['Bici de carretera',     900, $hoy->modify('-1 month')->format('Y-m-d'),   '#b88a3e', 'completado',  6, 150],
 ] as [$nombre, $meta, $limite, $color, $estado, $aportaciones, $importeBase]) {
     $stmtObjetivo->execute([$usuarioId, $nombre, $meta, $limite, $color, $estado]);
     $objetivoId = (int) $pdo->lastInsertId();

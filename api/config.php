@@ -31,8 +31,8 @@ const PAGINA_MAX        = 200;
 
 /** Paleta por defecto para categorías nuevas (validada para daltonismo). */
 const PALETA = [
-    '#2a78d6', '#eb6834', '#1baf7a', '#eda100',
-    '#e87ba4', '#008300', '#4a3aa7', '#e34948',
+    '#b88a3e', '#c46838', '#5a8a5c', '#8a7a3a',
+    '#b86878', '#6a8a3a', '#7a6aa0', '#c45a4a',
 ];
 
 

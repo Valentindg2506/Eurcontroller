@@ -23,7 +23,7 @@ export async function montarVista(contenedor, { acciones, periodo, alCambiarPeri
   vaciar(acciones).append(
     selectorPeriodo(periodo, alCambiarPeriodo),
     el('button', {
-      type: 'button', class: 'btn btn-sm',
+      type: 'button', class: 'btn btn-sm', title: 'Copiar mes anterior',
       onClick: async () => {
         const origen = desplazarPeriodo(periodo, -1);
         const confirmado = await confirmar({
@@ -39,7 +39,7 @@ export async function montarVista(contenedor, { acciones, periodo, alCambiarPeri
         avisoExito(respuesta.copiados ? 'Presupuestos copiados' : 'El mes anterior no tenía presupuestos');
         recargar();
       },
-    }, icono('copiar'), 'Copiar mes anterior'));
+    }, icono('copiar'), el('span', { class: 'oculto-movil' }, 'Copiar mes anterior')));
 
   contenedor.replaceChildren(el('div', { class: 'tarjeta' }, esqueletoLista(6)));
 

@@ -146,13 +146,22 @@ function construir(datos, periodo) {
       cuerpo: lienzoArea,
     }),
 
-    tarjeta({
-      titulo: 'Reparto por categoría',
-      subtitulo: categorias.length
-        ? `${dinero(kpis.gastos)} repartidos en ${categorias.length} categoría${categorias.length === 1 ? '' : 's'}`
-        : 'Gastos del mes',
-      cuerpo: barrasRango(agruparCategorias(categorias), { total: kpis.gastos }),
-    })));
+    el('div', { class: 'pila' },
+      tarjeta({
+        titulo: 'Reparto por categoría',
+        subtitulo: categorias.length
+          ? `${dinero(kpis.gastos)} repartidos en ${categorias.length} categoría${categorias.length === 1 ? '' : 's'}`
+          : 'Gastos del mes',
+        cuerpo: barrasRango(agruparCategorias(categorias), { total: kpis.gastos }),
+      }),
+      tarjeta({
+        titulo: 'Reparto por método de pago',
+        subtitulo: datos.por_metodo_pago.length
+          ? `${dinero(kpis.gastos)} con ${datos.por_metodo_pago.length} método${datos.por_metodo_pago.length === 1 ? '' : 's'}`
+          : 'Métodos del mes',
+        cuerpo: barrasRango(datos.por_metodo_pago, { total: kpis.gastos }),
+      })
+    )));
 
   montar(lienzoArea, (ancho) => areaAcumulada(datos.serie_diaria, ancho, {
     alto: 250,

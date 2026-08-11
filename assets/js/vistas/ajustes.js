@@ -36,6 +36,7 @@ export async function montarVista(contenedor, { acciones, alCerrarSesion, recarg
     contenedor.replaceChildren(el('div', { class: 'pila' },
       tarjetaPerfil(recargar),
       tarjetaInstalacion(),
+      tarjetaNotificaciones(),
       tarjetaApariencia(),
       tarjetaDatos(),
       tarjetaSeguridad(alCerrarSesion)));
@@ -66,6 +67,78 @@ function tarjetaInstalacion() {
     subtitulo: estadoInstalacion().estado === 'instalada'
       ? null
       : 'Tenla a mano como una aplicación más',
+    cuerpo,
+  });
+}
+
+
+/* --- Notificaciones -------------------------------------------------------- */
+
+function tarjetaNotificaciones() {
+  const soportado = 'Notification' in window && 'serviceWorker' in navigator;
+  
+  if (!soportado) {
+    return tarjeta({
+      titulo: 'Notificaciones',
+      subtitulo: 'Avisos en tu dispositivo',
+      cuerpo: el('p', { class: 'pequeno silenciado' }, 'Tu navegador no soporta notificaciones.')
+    });
+  }
+
+  const cuerpo = el('div', { class: 'pila-sm' });
+
+  const pintar = () => {
+    const estado = Notification.permission;
+    
+    if (estado === 'granted') {
+      cuerpo.replaceChildren(
+        el('div', { class: 'fila' },
+          el('span', { class: 'chip chip-ingreso' }, icono('check-circulo'), 'Activadas'),
+          el('span', { class: 'pequeno silenciado crece' }, 'Recibirás avisos de tus presupuestos y movimientos.')),
+        el('button', {
+          type: 'button', class: 'btn btn-sm', style: { alignSelf: 'flex-start', marginTop: '8px' },
+          onClick: () => {
+            navigator.serviceWorker.ready.then(reg => {
+              reg.showNotification('¡Notificaciones activas!', {
+                body: 'Eurcontroller te avisará de tus gastos.',
+                icon: 'assets/icons/icon-192.png'
+              });
+            });
+          }
+        }, icono('notificacion'), 'Probar notificación')
+      );
+    } else if (estado === 'denied') {
+      cuerpo.replaceChildren(
+        banda('Has bloqueado las notificaciones. Debes permitirlas desde los ajustes de tu navegador.', 'aviso')
+      );
+    } else {
+      cuerpo.replaceChildren(
+        el('p', { class: 'pequeno silenciado' }, 'Activa las notificaciones para recibir alertas sobre tus gastos y presupuestos.'),
+        el('button', {
+          type: 'button', class: 'btn btn-principal', style: { alignSelf: 'flex-start' },
+          onClick: async () => {
+            const permiso = await Notification.requestPermission();
+            if (permiso === 'granted') {
+              avisoExito('Notificaciones activadas');
+              navigator.serviceWorker.ready.then(reg => {
+                reg.showNotification('¡Notificaciones activadas!', {
+                  body: 'A partir de ahora recibirás avisos importantes.',
+                  icon: 'assets/icons/icon-192.png'
+                });
+              });
+            }
+            pintar();
+          }
+        }, icono('notificacion'), 'Activar notificaciones')
+      );
+    }
+  };
+
+  pintar();
+
+  return tarjeta({
+    titulo: 'Notificaciones',
+    subtitulo: 'Avisos en tu dispositivo',
     cuerpo,
   });
 }

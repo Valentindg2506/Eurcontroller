@@ -192,14 +192,14 @@ export const FRECUENCIAS = {
  * cada uno tiene su versión escalonada para modo oscuro.
  */
 const COLOR_OSCURO = {
-  '#2a78d6': '#3987e5',
-  '#eb6834': '#d95926',
-  '#1baf7a': '#199e70',
-  '#eda100': '#c98500',
-  '#e87ba4': '#d55181',
-  '#008300': '#008300',
-  '#4a3aa7': '#9085e9',
-  '#e34948': '#e66767',
+  '#b88a3e': '#cfa44e',
+  '#c46838': '#d57848',
+  '#5a8a5c': '#6b9e6d',
+  '#8a7a3a': '#a09050',
+  '#b86878': '#d07888',
+  '#6a8a3a': '#7aa04a',
+  '#7a6aa0': '#9a8ac0',
+  '#c45a4a': '#d87060',
 };
 
 export const PALETA = Object.keys(COLOR_OSCURO);
@@ -234,7 +234,7 @@ export function aplicarTema(preferencia = 'sistema', { persistir = true } = {}) 
   if (persistir) localStorage.setItem('eurc_tema', preferencia);
 
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.content = resuelto === 'oscuro' ? '#070b14' : '#f4f6fb';
+  if (meta) meta.content = resuelto === 'oscuro' ? '#0f0d0a' : '#f5f2ed';
 
   document.dispatchEvent(new CustomEvent('tema:cambio', { detail: { resuelto } }));
 }

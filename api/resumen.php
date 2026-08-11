@@ -84,6 +84,48 @@ $porCategoria = array_map(static function (array $c) use ($actual): array {
     ];
 }, $stmt->fetchAll());
 
+// --- Reparto por método de pago (gastos del mes) -----------------------------
+
+$stmt = $pdo->prepare(
+    'SELECT metodo_pago, SUM(importe) AS total
+       FROM transacciones
+      WHERE usuario_id = ? AND tipo = "gasto" AND fecha BETWEEN ? AND ?
+      GROUP BY metodo_pago
+      ORDER BY total DESC'
+);
+$stmt->execute([$usuarioId, $inicio, $fin]);
+
+$porMetodoPago = array_map(static function (array $m) use ($actual): array {
+    $total = round((float) $m['total'], 2);
+    // Asignar colores por defecto basados en el método para que coincida con el estilo de la app
+    $colores = [
+        'efectivo' => '#6a8a3a', // Verde
+        'tarjeta' => '#3b82f6', // Azul
+        'transferencia' => '#8b5cf6', // Morado
+        'bizum' => '#f97316', // Naranja
+        'domiciliado' => '#ef4444' // Rojo
+    ];
+    $color = $colores[$m['metodo_pago']] ?? '#94a3b8'; // Gris si no coincide
+    
+    // Nombres más amigables
+    $nombres = [
+        'efectivo' => 'Efectivo',
+        'tarjeta' => 'Tarjeta',
+        'transferencia' => 'Transferencia',
+        'bizum' => 'Bizum',
+        'domiciliado' => 'Recibo domiciliado'
+    ];
+    $nombre = $nombres[$m['metodo_pago']] ?? ucfirst($m['metodo_pago']);
+
+    return [
+        'metodo_pago' => $m['metodo_pago'],
+        'nombre'      => $nombre,
+        'color'       => $color,
+        'total'       => $total,
+        'pct'         => $actual['gastos'] > 0 ? round($total / $actual['gastos'], 4) : 0,
+    ];
+}, $stmt->fetchAll());
+
 // --- Serie diaria del mes ----------------------------------------------------
 
 $stmt = $pdo->prepare(
@@ -286,6 +328,7 @@ responder([
         'movimientos' => (int) $historico['movimientos'],
     ],
     'por_categoria'  => $porCategoria,
+    'por_metodo_pago'=> $porMetodoPago,
     'serie_diaria'   => $serieDiaria,
     'serie_mensual'  => $serieMensual,
     'presupuestos'   => [

@@ -21,7 +21,7 @@
  * siguiente recarga. Al cambiarla, el service worker se reinstala, borra las
  * cachés viejas y toma el control de inmediato.
  */
-const VERSION = 'eurcontroller-v4';
+const VERSION = 'eurcontroller-v14';
 const AMBITO = self.registration.scope;
 
 const url = (ruta) => new URL(ruta, AMBITO).href;
@@ -48,6 +48,7 @@ const SHELL = [
   'assets/icons/favicon.svg',
   'assets/icons/icon-192.png',
   'assets/icons/icon-512.png',
+  'assets/icons/apple-touch-icon.png',
 ].map(url);
 
 
